@@ -76,6 +76,6 @@
 
 ## Tableau Dashboard
 
-- [전략 대시보드](https://public.tableau.com/app/profile/minjeong.choi/viz/nail_dashboard_master/Runail_customer)
+- [전략 대시보드](https://public.tableau.com/app/profile/minjeong.choi/viz/nail_dashboard_master/Nail_overview)
 - [월별 운영 대시보드](https://public.tableau.com/app/profile/minjeong.choi/viz/nail_dashboard_monthly/nail_dashboard_monthly)
 
