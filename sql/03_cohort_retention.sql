@@ -1,9 +1,5 @@
--- =========================================================================
--- 03_cohort_retention.sql
--- 목적: 유저별 최초 유입월(Cohort)을 정의하고, 이를 기준으로 월별 재방문율(Retention)을
---       다차원 연산하여 리텐션 매트릭스 테이블을 생성합니다.
--- 유래: 02_ecommerce_behavior_analysis.ipynb의 "코호트 및 리텐션 분석" 로직
--- =========================================================================
+-- 목적: 유저별 최초 유입월(Cohort)을 정의하고, 이를 기준으로 월별 재방문율(Retention)을 다차원 연산, 리텐션 매트릭스 테이블 생성
+-- 참고: 02_ecommerce_behavior_analysis.ipynb의 "코호트 및 리텐션 분석" 로직
 
 -- 1. 유저별 최초 방문월(유입 Cohort 기준월) 산출
 CREATE TABLE user_first_month AS
@@ -27,7 +23,7 @@ SELECT
     first.first_month,
     act.active_month,
     
-    -- 경과 월수 연산 (DuckDB/PostgreSQL 호환 표준 월 차이 계산식)
+    -- 경과 월수 연산
     -- (현재활동년도 - 최초유입년도) * 12 + (현재활동월 - 최초유입월)
     (EXTRACT(YEAR FROM act.active_month) - EXTRACT(YEAR FROM first.first_month)) * 12 
     + (EXTRACT(MONTH FROM act.active_month) - EXTRACT(MONTH FROM first.first_month)) AS period_diff
