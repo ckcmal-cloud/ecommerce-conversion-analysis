@@ -89,12 +89,9 @@
 → 04_crm_dashboard_mart.sql (시각화 대시보드 연동용 핵심 KPI 및 통합 CRM 마트 구축)
 
 ### 구현 내용
-- 광고 참여 로그와 적립 로그 통합
-- CTIT 및 IP 기반 어뷰징 탐지
-- 도메인별 KPI 집계
-- 추천용 데이터 마트 생성
-- CTE 및 Window Function 활용
-- JOIN Fan-out 방지를 위한 집계 구조 설계
+- 세션 기반 Funnel 분석: 인과관계 분석을 위해 단순 유저 고유값 매칭이 아닌, 단일 방문 세션(user_session) 범위 내 행동 흐름을 추적하도록 연산 정밀화
+- RFM 고객 세그멘테이션: NTILE(5) 분위 함수 및 Recency + 1일 보정식을 사용하여 통계적 왜곡 없는 우수 고객 등급 산정 스코어링 구현
+- Cohort Retention 분석: FIRST_VALUE 윈도우 함수를 결합하여 유저의 유입월 대비 월별 활성 사용자 수와 유지 비율을 다차원 집계
 
 ### 학습 내용
 - Python 기반 EDA 로직의 SQL 재구성
