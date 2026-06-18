@@ -80,7 +80,7 @@
 - [월별 운영 대시보드](https://public.tableau.com/app/profile/minjeong.choi/viz/nail_dashboard_monthly/nail_dashboard_monthly)
 
 ## SQL 재설계 (보완 프로젝트)
-- 기존 Python 기반 이커머스 EDA 분석 프로젝트를 마케팅 CRM 및 추천 시스템 입력 스키마 요건에 맞추어 실무형 SQL 데이터 마트 구조로 재구성하며 데이터 정합성을 고도화함
+- 기존 Python 기반 이커머스 EDA 분석 프로젝트를 CRM 분석 및 고객 행동 분석 관점의 SQL 데이터 마트 구조로 재구성하며 데이터 정합성을 고도화함
 
 ### 파이프라인 (Pipeline)
 01_user_event_table.sql (타임존 로컬 변환 및 무효 로그 기초 정제)
@@ -89,9 +89,11 @@
 → 04_crm_dashboard_mart.sql (시각화 대시보드 연동용 핵심 KPI 및 통합 CRM 마트 구축)
 
 ### 구현 내용
-- 세션 기반 Funnel 분석: 인과관계 분석을 위해 단순 유저 고유값 매칭이 아닌, 단일 방문 세션(user_session) 범위 내 행동 흐름을 추적하도록 연산 정밀화
-- RFM 고객 세그멘테이션: NTILE(5) 분위 함수 및 Recency + 1일 보정식을 사용하여 통계적 왜곡 없는 우수 고객 등급 산정 스코어링 구현
-- Cohort Retention 분석: FIRST_VALUE 윈도우 함수를 결합하여 유저의 유입월 대비 월별 활성 사용자 수와 유지 비율을 다차원 집계
+- 세션 기반 Funnel 분석
+- NTILE 기반 RFM 세그멘테이션
+- Cohort Retention 분석
+- CTE 및 Window Function 활용
+- CRM 통합 데이터 마트 구축
 
 ### 학습 내용
 - Python 기반 EDA 로직의 SQL 재구성
