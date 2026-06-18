@@ -1,14 +1,8 @@
--- =========================================================================
--- 02_funnel_rfm_analysis.sql
--- 목적: 유저 식별자(user_id) 단위로 집계되는 1) 퍼널(Funnel) 지표와 
---       2) 고객 행동 세분화를 위한 RFM 지표를 동시에 연산하고 테이블을 구축합니다.
--- 유래: 02_ecommerce_behavior_analysis.ipynb의 "퍼널" 및 "RFM 세그멘테이션" 분석 로직
--- =========================================================================
+-- 목적: 유저 식별자(user_id) 단위로 집계되는 1) 퍼널(Funnel) 지표, 2) 고객 행동 세분화를 위한 RFM 지표 동시 연산 테이블 구축
+-- 참고: 02_ecommerce_behavior_analysis.ipynb의 "퍼널" 및 "RFM 세그멘테이션" 분석 로직
 
--- -------------------------------------------------------------------------
--- [PART A] 유저 및 세션 기준 퍼널(Funnel) 단계별 플래그 생성
--- view -> cart -> purchase(구매) 흐름 분석
--- -------------------------------------------------------------------------
+
+-- 01. 유저 및 세션 기준 퍼널(Funnel) 단계별 플래그 생성 : view -> cart -> purchase(구매) 흐름 분석
 CREATE TABLE funnel_analysis_results AS
 SELECT 
     user_id,
@@ -25,9 +19,7 @@ FROM user_event_table
 GROUP BY user_id, user_session;
 
 
--- -------------------------------------------------------------------------
--- [PART B] 구매(purchase) 이력을 기반으로 한 유저별 RFM 지표 연산
--- -------------------------------------------------------------------------
+-- 02. 구매(purchase) 이력을 기반으로 한 유저별 RFM 지표 연산
 CREATE TABLE rfm_analysis_results AS
 WITH base_purchase AS (
     -- 정상적인 구매 건만 필터링하여 유저 단위로 집계
@@ -44,21 +36,11 @@ customer_rfm_raw AS (
         user_id,
         
         -- Recency: 전체 관측 데이터의 마지막 구매일 + 1일 기준, 고객별 최근 구매일까지의 차이(일수)
-        --
         -- [설계 근거]
         --   Python 원본: current_date = df['event_time'].max() + pd.Timedelta(days=1)
         --                recency = (current_date - 고객별 max(event_time)).dt.days
         --   → 가장 최근 구매 유저의 Recency = 1 (0이 되지 않도록 +1일 보정)
-        --
-        -- [DuckDB 동작]
-        --   datediff('day', date1, date2) → BIGINT 정수 반환 (AVG/ROUND 집계 즉시 가능)
-        --   DATE + INTERVAL '1 day'       → TIMESTAMP 반환 (datediff 2번째 인자로 허용)
-        --   DATE - DATE                   → BIGINT 반환 (단, +INTERVAL 혼용 불가)
-        --
-        -- [PostgreSQL 호환 대안]
-        --   EXTRACT(EPOCH FROM (base_ts - target_ts)) / 86400 → FLOAT, CAST INTEGER 필요
-        --   datediff 함수 자체는 DuckDB 전용 (PG 비지원) → PG 이관 시 위 EPOCH 방식으로 교체
-        --
+    
         datediff(
             'day',
             MAX(event_date),
